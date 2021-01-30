@@ -1,0 +1,5 @@
+python-absl (0.11.0-1) UNRELEASED; urgency=medium
+
+  * Initial release. (Closes: #975675)
+
+ -- Romain Porte <debian@microjoe.org>  Sun, 20 Dec 2020 18:26:10 +0100

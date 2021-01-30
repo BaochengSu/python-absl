@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+export LC_ALL=C.UTF-8
+
+# * Remove changelog from python package, already installed in
+#   override_dh_installchangelogs below.
+# * Most test files are marked executable. Bug reported to upstream:
+#   https://github.com/abseil/abseil-py/issues/158
+# * LICENSE files should not be installed in /usr/lib
+export PYBUILD_AFTER_INSTALL=rm -rf '{destdir}/{install_dir}/absl/CHANGELOG.md' && \
+	find '{destdir}/{install_dir}/absl/' -name '*.py' -perm 755 | xargs -r chmod 644 && \
+	find '{destdir}/{install_dir}/absl/' -name 'LICENSE' | xargs rm
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_installchangelogs:
+	dh_installchangelogs absl/CHANGELOG.md

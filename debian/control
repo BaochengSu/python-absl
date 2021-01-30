@@ -1,0 +1,28 @@
+Source: python-absl
+Section: python
+Priority: optional
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders:
+ Romain Porte <debian@microjoe.org>,
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3-all,
+ python3-setuptools,
+ python3-setuptools-scm,
+ python3-six,
+Standards-Version: 4.5.1
+Homepage: https://github.com/abseil/abseil-py
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-absl.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-absl
+Rules-Requires-Root: no
+
+Package: python3-absl
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+Description: Abseil Python Common Libraries
+ A collection of Python library code for building Python applications. The code
+ is collected from Google's own Python code base, and has been extensively
+ tested and used in production.
