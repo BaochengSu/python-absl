@@ -494,6 +494,153 @@ class ParameterizedTestsTest(absltest.TestCase):
         ],
         short_descs)
 
+  def test_successful_product_test_testgrid(self):
+
+    class GoodProductTestCase(parameterized.TestCase):
+
+      @parameterized.product(
+          num=(0, 20, 80),
+          modulo=(2, 4),
+          expected=(0,)
+      )
+      def testModuloResult(self, num, modulo, expected):
+        self.assertEqual(expected, num % modulo)
+
+    ts = unittest.makeSuite(GoodProductTestCase)
+    res = unittest.TestResult()
+    ts.run(res)
+    self.assertEqual(ts.countTestCases(), 6)
+    self.assertEqual(res.testsRun, 6)
+    self.assertTrue(res.wasSuccessful())
+
+  def test_successful_product_test_kwarg_seqs(self):
+
+    class GoodProductTestCase(parameterized.TestCase):
+
+      @parameterized.product((dict(num=0), dict(num=20), dict(num=0)),
+                             (dict(modulo=2), dict(modulo=4)),
+                             (dict(expected=0),))
+      def testModuloResult(self, num, modulo, expected):
+        self.assertEqual(expected, num % modulo)
+
+    ts = unittest.makeSuite(GoodProductTestCase)
+    res = unittest.TestResult()
+    ts.run(res)
+    self.assertEqual(ts.countTestCases(), 6)
+    self.assertEqual(res.testsRun, 6)
+    self.assertTrue(res.wasSuccessful())
+
+  def test_successful_product_test_kwarg_seq_and_testgrid(self):
+
+    class GoodProductTestCase(parameterized.TestCase):
+
+      @parameterized.product((dict(
+          num=5, modulo=3, expected=2), dict(num=7, modulo=4, expected=3)),
+                             dtype=(int, float))
+      def testModuloResult(self, num, dtype, modulo, expected):
+        self.assertEqual(expected, dtype(num) % modulo)
+
+    ts = unittest.makeSuite(GoodProductTestCase)
+    res = unittest.TestResult()
+    ts.run(res)
+    self.assertEqual(ts.countTestCases(), 4)
+    self.assertEqual(res.testsRun, 4)
+    self.assertTrue(res.wasSuccessful())
+
+  def test_inconsistent_arg_names_in_kwargs_seq(self):
+    with self.assertRaisesRegex(AssertionError, 'must all have the same keys'):
+
+      class BadProductParams(parameterized.TestCase):  # pylint: disable=unused-variable
+
+        @parameterized.product((dict(num=5, modulo=3), dict(num=7, modula=2)),
+                               dtype=(int, float))
+        def test_something(self):
+          pass  # not called because argnames are not the same
+
+  def test_duplicate_arg_names_in_kwargs_seqs(self):
+    with self.assertRaisesRegex(AssertionError, 'must all have distinct'):
+
+      class BadProductParams(parameterized.TestCase):  # pylint: disable=unused-variable
+
+        @parameterized.product((dict(num=5, modulo=3), dict(num=7, modulo=4)),
+                               (dict(foo='bar', num=5), dict(foo='baz', num=7)),
+                               dtype=(int, float))
+        def test_something(self):
+          pass  # not called because `num` is specified twice
+
+  def test_duplicate_arg_names_in_kwargs_seq_and_testgrid(self):
+    with self.assertRaisesRegex(AssertionError, 'duplicate argument'):
+
+      class BadProductParams(parameterized.TestCase):  # pylint: disable=unused-variable
+
+        @parameterized.product(
+            (dict(num=5, modulo=3), dict(num=7, modulo=4)),
+            (dict(foo='bar'), dict(foo='baz')),
+            dtype=(int, float),
+            foo=('a', 'b'),
+        )
+        def test_something(self):
+          pass  # not called because `foo` is specified twice
+
+  def test_product_recorded_failures(self):
+
+    class MixedProductTestCase(parameterized.TestCase):
+
+      @parameterized.product(
+          num=(0, 10, 20),
+          modulo=(2, 4),
+          expected=(0,)
+      )
+      def testModuloResult(self, num, modulo, expected):
+        self.assertEqual(expected, num % modulo)
+
+    ts = unittest.makeSuite(MixedProductTestCase)
+    self.assertEqual(6, ts.countTestCases())
+
+    res = unittest.TestResult()
+    ts.run(res)
+    self.assertEqual(res.testsRun, 6)
+    self.assertFalse(res.wasSuccessful())
+    self.assertLen(res.failures, 1)
+    self.assertEmpty(res.errors)
+
+  def test_mismatched_product_parameter(self):
+
+    class MismatchedProductParam(parameterized.TestCase):
+
+      @parameterized.product(
+          a=(1, 2),
+          mismatch=(1, 2)
+      )
+      # will fail because of mismatch in parameter names.
+      def test_something(self, a, b):
+        pass
+
+    ts = unittest.makeSuite(MismatchedProductParam)
+    res = unittest.TestResult()
+    ts.run(res)
+    self.assertEqual(res.testsRun, 4)
+    self.assertFalse(res.wasSuccessful())
+    self.assertLen(res.errors, 4)
+
+  def test_no_test_error_empty_product_parameter(self):
+    with self.assertRaises(parameterized.NoTestsError):
+
+      class EmptyProductParam(parameterized.TestCase):  # pylint: disable=unused-variable
+
+        @parameterized.product(arg1=[1, 2], arg2=[])
+        def test_something(self, arg1, arg2):
+          pass  # not called because arg2 has empty list of values.
+
+  def test_bad_product_parameters(self):
+    with self.assertRaisesRegex(AssertionError, 'must be given as list or'):
+
+      class BadProductParams(parameterized.TestCase):  # pylint: disable=unused-variable
+
+        @parameterized.product(arg1=[1, 2], arg2='abcd')
+        def test_something(self, arg1, arg2):
+          pass  # not called because arg2 is not list or tuple.
+
   def test_generator_tests_disallowed(self):
     with self.assertRaisesRegex(RuntimeError, 'generated.*without'):
       class GeneratorTests(parameterized.TestCase):  # pylint: disable=unused-variable
