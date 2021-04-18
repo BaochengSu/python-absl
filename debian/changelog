@@ -1,5 +1,5 @@
-python-absl (0.11.0-1) unstable; urgency=medium
+python-absl (0.12.0-1) unstable; urgency=medium
 
-  * Initial release. (Closes: #975675)
+  * Initial release (Closes: #987152)
 
- -- Romain Porte <debian@microjoe.org>  Sun, 20 Dec 2020 18:26:10 +0100
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Sun, 18 Apr 2021 15:25:58 +0200
