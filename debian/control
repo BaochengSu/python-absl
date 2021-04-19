@@ -6,7 +6,7 @@ Uploaders:
  Romain Porte <debian@microjoe.org>,
 Build-Depends:
  debhelper-compat (= 13),
- dh-python,
+ dh-sequence-python3,
  python3-all,
  python3-setuptools,
  python3-six,
