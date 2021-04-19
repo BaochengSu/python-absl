@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-export LC_ALL=C.UTF-8
-
 %:
 	dh $@ --buildsystem=pybuild
 
