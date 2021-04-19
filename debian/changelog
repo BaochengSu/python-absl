@@ -1,8 +1,18 @@
-python-absl (0.12.0-1) UNRELEASED; urgency=medium
+python-absl (0.12.0-2) UNRELEASED; urgency=medium
 
-  * New upstream release.
+  * Introduce autopkgtest via autopkgtest-pkg-python.
+  * d/rules: do not install unecessary files.
 
  -- Romain Porte <debian@microjoe.org>  Mon, 15 Mar 2021 08:30:17 +0100
+
+python-absl (0.12.0-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #987152)
+  * d/control:
+    + Drop unnecessary Build-Depends on python3-setuptools-scm.
+    + Longer Description.
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Sun, 18 Apr 2021 15:25:58 +0200
 
 python-absl (0.11.0-1) unstable; urgency=medium
 
