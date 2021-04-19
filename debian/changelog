@@ -1,9 +1,14 @@
-python-absl (0.12.0-2) UNRELEASED; urgency=medium
+python-absl (0.12.0-2) unstable; urgency=medium
 
+  * Team upload.
+
+  [ Romain Porte ]
   * Introduce autopkgtest via autopkgtest-pkg-python.
-  * d/rules: do not install unecessary files.
 
- -- Romain Porte <debian@microjoe.org>  Mon, 15 Mar 2021 08:30:17 +0100
+  [ Mattia Rizzolo ]
+  * Build-Depend on dh-sequence-python3 instead of using "--with python3"
+
+ -- Mattia Rizzolo <mattia@debian.org>  Mon, 19 Apr 2021 14:02:52 +0200
 
 python-absl (0.12.0-1) unstable; urgency=medium
 
