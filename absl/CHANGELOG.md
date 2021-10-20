@@ -8,6 +8,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com).
 
 Nothing notable unreleased.
 
+## 0.15.0 (2021-10-19)
+
+### Changed
+
+*   (testing) #128: When running bazel with its `--test_filter=` flag, it now
+    treats the filters as `unittest`'s `-k` flag in Python 3.7+.
+
+## 0.14.1 (2021-09-30)
+
+### Fixed
+
+*   Top-level `LICENSE` file is now exported in bazel.
+
+## 0.14.0 (2021-09-21)
+
+### Fixed
+
+*   #171: Creating `argparse_flags.ArgumentParser` with `argument_default=` no
+    longer raises an exception when other `absl.flags` flags are defined.
+*   #173: `absltest` now correctly sets up test filtering and fail fast flags
+    when an explicit `argv=` parameter is passed to `absltest.main`.
+
 ## 0.13.0 (2021-06-14)
 
 ### Added

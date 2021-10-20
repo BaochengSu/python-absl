@@ -2336,8 +2336,12 @@ def _setup_filtering(argv):
   The following environment variable is used in this method:
 
     TESTBRIDGE_TEST_ONLY: string, if set, is forwarded to the unittest
-      framework to use as a test filter. Its value is split with shlex
-      before being passed as positional arguments on argv.
+      framework to use as a test filter. Its value is split with shlex, then:
+      1. On Python 3.6 and before, split values are passed as positional
+         arguments on argv.
+      2. On Python 3.7+, split values are passed to unittest's `-k` flag. Tests
+         are matched by glob patterns or substring. See
+         https://docs.python.org/3/library/unittest.html#cmdoption-unittest-k
 
   Args:
     argv: the argv to mutate in-place.
@@ -2346,7 +2350,11 @@ def _setup_filtering(argv):
   if argv is None or not test_filter:
     return
 
-  argv[1:1] = shlex.split(test_filter)
+  filters = shlex.split(test_filter)
+  if sys.version_info[:2] >= (3, 7):
+    filters = ['-k=' + test_filter for test_filter in filters]
+
+  argv[1:1] = filters
 
 
 def _setup_test_runner_fail_fast(argv):
@@ -2452,7 +2460,10 @@ def _setup_sharding(custom_loader=None):
 def _run_and_get_tests_result(argv, args, kwargs, xml_test_runner_class):
   # type: (MutableSequence[Text], Sequence[Any], MutableMapping[Text, Any], Type) -> unittest.TestResult
   # pylint: enable=line-too-long
-  """Executes a set of Python unit tests and returns the result."""
+  """Same as run_tests, except it returns the result instead of exiting."""
+
+  # The entry from kwargs overrides argv.
+  argv = kwargs.pop('argv', argv)
 
   # Set up test filtering if requested in environment.
   _setup_filtering(argv)
@@ -2536,7 +2547,7 @@ def _run_and_get_tests_result(argv, args, kwargs, xml_test_runner_class):
 
   # Let unittest.TestProgram.__init__ do its own argv parsing, e.g. for '-v',
   # on argv, which is sys.argv without the command-line flags.
-  kwargs.setdefault('argv', argv)
+  kwargs['argv'] = argv
 
   try:
     test_program = unittest.TestProgram(*args, **kwargs)
@@ -2564,7 +2575,9 @@ def run_tests(argv, args, kwargs):  # pylint: disable=line-too-long
 
   Args:
     argv: sys.argv with the command-line flags removed from the front, i.e. the
-      argv with which app.run() has called __main__.main.
+      argv with which app.run() has called __main__.main. It is passed to
+      unittest.TestProgram.__init__(argv=), which does its own flag parsing. It
+      is ignored if kwargs contains an argv entry.
     args: Positional arguments passed through to unittest.TestProgram.__init__.
     kwargs: Keyword arguments passed through to unittest.TestProgram.__init__.
   """
