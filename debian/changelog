@@ -1,7 +1,12 @@
 python-absl (0.15.0-1) UNRELEASED; urgency=medium
 
+  [ Romain Porte ]
   * Introduce autopkgtests
   * New upstream version 0.15.0
+
+  [ Jeroen Ploemen ]
+  * Control: bump Standards-Version to 4.6.0 (from 4.5.1; no further
+    changes).
 
  -- Romain Porte <debian@microjoe.org>  Wed, 20 Oct 2021 23:35:04 +0200
 
