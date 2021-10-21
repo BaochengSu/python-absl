@@ -1,4 +1,4 @@
-python-absl (0.15.0-1) UNRELEASED; urgency=medium
+python-absl (0.15.0-1) unstable; urgency=medium
 
   [ Romain Porte ]
   * Introduce autopkgtests
@@ -8,7 +8,7 @@ python-absl (0.15.0-1) UNRELEASED; urgency=medium
   * Control: bump Standards-Version to 4.6.0 (from 4.5.1; no further
     changes).
 
- -- Romain Porte <debian@microjoe.org>  Wed, 20 Oct 2021 23:35:04 +0200
+ -- Romain Porte <debian@microjoe.org>  Thu, 21 Oct 2021 08:58:39 +0000
 
 python-absl (0.13.0-1) unstable; urgency=medium
 
